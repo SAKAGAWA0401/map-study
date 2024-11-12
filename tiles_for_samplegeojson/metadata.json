@@ -1,0 +1,16 @@
+{
+"name": "tiles",
+"description": "tiles",
+"version": "2",
+"minzoom": "0",
+"maxzoom": "14",
+"center": "139.163818,36.430122,14",
+"bounds": "139.157420,36.419152,139.182778,36.439865",
+"antimeridian_adjusted_bounds": "139.157420,36.419152,139.182778,36.439865",
+"type": "overlay",
+"strategies": "[{\"tiny_polygons\":1},{\"tiny_polygons\":1},{\"tiny_polygons\":1},{\"tiny_polygons\":1},{},{},{},{},{},{},{},{},{},{},{}]",
+"format": "pbf",
+"generator": "tippecanoe v2.68.0",
+"generator_options": "tippecanoe -e tiles sample.geojson -pC",
+"json": "{\"vector_layers\":[{\"id\":\"sample\",\"description\":\"\",\"minzoom\":0,\"maxzoom\":14,\"fields\":{\"name\":\"String\"}}],\"tilestats\":{\"layerCount\":1,\"layers\":[{\"layer\":\"sample\",\"count\":1,\"geometry\":\"Polygon\",\"attributeCount\":1,\"attributes\":[{\"attribute\":\"name\",\"count\":1,\"type\":\"string\",\"values\":[\"サンプルポリゴン\"]}]}]}}"
+}

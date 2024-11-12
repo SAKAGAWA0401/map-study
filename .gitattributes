@@ -1,0 +1,11 @@
+# XMLファイルをLFで管理
+*.xml text eol=lf
+
+# GeoJSONファイルをLFで管理
+*.geojson text eol=lf
+
+# HTMLファイルをLFで管理
+*.html text eol=lf
+
+# その他のテキストファイルをLFで管理
+OFL.txt text eol=lf

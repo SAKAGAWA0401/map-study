@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <title>Vector Tileで大量データ通信に対応する</title>
+        <!-- MapLibre GL JSを読み込み -->
+        <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+        <link
+            href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css"
+            rel="stylesheet"
+        />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div id="map" style="height: 80vh"></div>
+        <script>
+            // タイルのURLはhttpから始まるフルパスである必要があるため、http~~/index.htmlのhttp://~~までを取得する
+            const path = location.href.replace('/map_vectortile.html', '');
+            // ベクトルタイルが、このファイルからの相対パスで`./tiles`ディレクトリに保存されているとします
+            const vectortileUrl = `${path}/tiles/{z}/{x}/{y}.pbf`;
+
+            const map = new maplibregl.Map({
+                container: 'map',
+                center: [137.1, 36.5],
+                zoom: 4,
+                style: {
+                    // MapLibre-Style
+                    version: 8,
+                    sources: {
+                        // 地図上で使うデータを定義する
+                        osm: {
+                            type: 'raster', // ラスタータイル
+                            tiles: [
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            ],
+                            tileSize: 256, // タイルの解像度, デフォルトは512
+                            maxzoom: 18,
+                            attribution:
+                                '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        },
+                        admin: {
+                            type: 'vector', // ベクトルタイル
+                            tiles: [vectortileUrl],
+                            maxzoom: 8,
+                            attribution:
+                                '<a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v3_1.html">国土数値情報 - 行政区域データ</a>',
+                        },
+                    },
+                    layers: [
+                        {
+                            id: 'osm-layer',
+                            source: 'osm', // 使うデータをsourcesのkeyで指定する
+                            type: 'raster', // データをどのように表示するか指定する
+                        },
+                        {
+                            id: 'admin-layer',
+                            source: 'admin', // sourcesで定義したうち、このレイヤーで使うデータkeyを指定する
+                            'source-layer': 'admin', // ベクトルタイル内のレイヤー名を指定する
+                            type: 'fill', // データをどのように表示するか指定する
+                            paint: {
+                                'fill-color': '#fa0', // polygonの色
+                                'fill-opacity': 0.5, // polygonの透過度
+                                'fill-outline-color': '#00f', // polygonの枠線の色
+                            }, // type:fillのlayerは枠線の太さを変更できない(ほぼ見えない)→type:lineを追加する(styling.html)
+                        },
+                    ],
+                },
+            });
+            map.on('click', (e) => {
+                // admin-layerからクリック地点にある地物すべてを取得
+                /*今回は想定されない、以下のメソッドを利用すると重なっている複数の地物(ポリゴンデータ)を
+                取得することも可能。このめっそっ殿返り値は常に配列になることに注意*/
+                const features = map.queryRenderedFeatures(e.point, {
+                    layers: ['admin-layer'],
+                });
+                if (features.length === 0) {
+                    return;
+                } // 地物がない場合は何もしない
+                const feature = features[0]; // 一番上の地物を取得
+                alert(`${feature.properties.N03_007}: ${feature.properties.N03_001}${feature.properties.N03_004}`);
+            });
+        </script>
+    </body>
+</html>
